@@ -58,11 +58,10 @@
   }
 
   const RE_INVISIBLE   = /[\u200B\u200C\u200D\uFEFF\u00AD\u200E\u200F\u202A-\u202E\u2060-\u2064\u2066-\u2069\u206A-\u206F]/g;
+  const RE_WORD_SPACING_MARKS = /[\u200B\u2060]/g;
   const RE_NBSP        = /\u00A0/g;
   const RE_DASHES      = /[\u2012\u2013\u2014\u2015\u2212\uFE58\u2E3A\u2E3B]/g;
   const RE_DBL_HYPHEN  = /--+/g;
-  // Hyphen used as clause separator (space on at least one side) → ", "
-  const RE_HYPHEN_CLAUSE = /(\w)[ \t]*-[ \t]+(\w)/g;
   const RE_DBL_QUOTES  = /[\u201C\u201D\u201E\u201F\u2033\u2036]/g;
   const RE_SGL_QUOTES  = /[\u2018\u2019\u201A\u201B\u2032\u2035]/g;
 
@@ -88,7 +87,7 @@
   const RE_INLINE_CODE       = /`([^`]+)`/g;
 
   // Citation / leaked tokens
-  const RE_CITATIONS = /\bciteturn\d+\w*\b|contentReference\[[^\]]*\]|\u3010[\d:†\w\s]+\u3011/g;
+  const RE_CITATIONS = /contentReference\[[^\]]*\](?:\{[^}]*\})?|\[(?:\d+|cite:\s*\d+)(?:\s*[,–-]\s*\d+)*\]|\u3010[\d:†\w\s]+\u3011|\bcite\w*\d+\b/gi;
 
   // Unfilled placeholders
   const RE_PLACEHOLDERS = /\[(?:Your |INSERT |Describe|Add |Enter |Include |Specify )[^\]]{0,60}\]/gi;
@@ -98,6 +97,8 @@
     "It is important to note that",
     "It's important to note that",
     "It\u2019s important to note that",
+    "Please note that",
+    "In summary",
     "It is worth noting that",
     "It's worth noting that",
     "It\u2019s worth noting that",
@@ -109,6 +110,16 @@
     "In the ever evolving landscape of",
     "Let's dive in",
     "Let\u2019s dive in",
+    "First and foremost,",
+    "As a matter of fact,",
+    "To begin with,",
+    "Additionally,",
+    "Furthermore,",
+    "Moreover,",
+    "Here are",
+    "Here is",
+    "Needless to say,",
+    "Sure!",
     "In conclusion,",
     "In conclusion",
     "I hope this helps",
@@ -119,7 +130,6 @@
     "Overall,",
     "Overall",
     "It goes without saying that",
-    "Needless to say,",
     "Needless to say",
     "As previously mentioned,",
     "As previously mentioned",
@@ -154,10 +164,10 @@
     [/\bleverages\b/gi,     'uses'],
     [/\bleveraged\b/gi,     'used'],
     [/\bleveraging\b/gi,    'using'],
-    [/\bdelve into\b/gi,    'examine'],
-    [/\bdelves into\b/gi,   'examines'],
-    [/\bdelved into\b/gi,   'examined'],
-    [/\bdelving into\b/gi,  'examining'],
+    [/\bdelve\b/gi,         'examine'],
+    [/\bdelves\b/gi,        'examines'],
+    [/\bdelved\b/gi,        'examined'],
+    [/\bdelving\b/gi,       'examining'],
     [/\bshowcase\b/gi,      'show'],
     [/\bshowcases\b/gi,     'shows'],
     [/\bshowcased\b/gi,     'showed'],
@@ -227,15 +237,13 @@
     let out = input;
 
     if (s.removeWatermarks) {
+      out = out.replace(RE_WORD_SPACING_MARKS, ' ');
       out = out.replace(RE_INVISIBLE, '');
       out = out.replace(RE_NBSP, ' ');
     }
     if (s.fixDashes) {
-      // Big Unicode dashes → space (em dash, en dash, etc.)
-      out = out.replace(RE_DASHES, ' ');
-      out = out.replace(RE_DBL_HYPHEN, ' ');
-      // ASCII hyphen used as clause separator (space on at least one side) → ", "
-      out = out.replace(RE_HYPHEN_CLAUSE, '$1, $2');
+      out = out.replace(RE_DASHES, ' - ');
+      out = out.replace(RE_DBL_HYPHEN, '-');
     }
     if (s.fixQuotes) {
       out = out.replace(RE_DBL_QUOTES, '"');
@@ -254,15 +262,16 @@
       out = out.replace(RE_HEADING, '');
     }
     if (s.removeCitations) {
-      out = out.replace(RE_CITATIONS, '');
+      out = out.replace(RE_CITATIONS, ' ');
     }
     if (s.removePlaceholders) {
-      out = out.replace(RE_PLACEHOLDERS, '');
+      out = out.replace(RE_PLACEHOLDERS, ' ');
     }
     if (s.removeFillerPhrases) {
       for (const phrase of FILLER_PHRASES) {
-        const re = new RegExp('\\s*' + phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
-        out = out.replace(re, '');
+        const normalizedPhrase = phrase.replace(/[,:!?]+$/, '');
+        const re = new RegExp('(^|[ \\t\\r\\n])' + normalizedPhrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '[,:!?]?(?=$|\\s)', 'gi');
+        out = out.replace(re, '$1');
       }
     }
     if (s.replaceAIWords) {
@@ -298,7 +307,7 @@
 
     // Fix sentence capitalisation: after ". " or ".\n" capitalise next letter
     if (s.fixPunctuation) {
-      out = out.replace(/([.!?])\s+([a-z])/g, (m, p, l) => p + ' ' + l.toUpperCase());
+      out = out.replace(/([.!?])[ \t]+([a-z])/g, (m, p, l) => p + ' ' + l.toUpperCase());
     }
 
     // Trim trailing whitespace per line, collapse blank lines, collapse spaces

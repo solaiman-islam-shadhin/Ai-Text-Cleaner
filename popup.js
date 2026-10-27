@@ -12,7 +12,7 @@
 
   const PREVIEWS = {
     removeWatermarks: { before: 'Hello\u200B World\uFEFF text', after: 'Hello World text' },
-    fixDashes:        { before: 'AI tools\u2014once niche\u2014are mainstream. Use--it now.', after: 'AI tools once niche are mainstream. Use it now.' },
+    fixDashes:        { before: 'AI tools\u2014once niche\u2014are mainstream. Use--it now.', after: 'AI tools - once niche - are mainstream. Use-it now.' },
     fixQuotes:        { before: '\u201CHello\u201D she said, \u2018great\u2019', after: '"Hello" she said, \'great\'' },
     removeEmojis:     { before: '\uD83E\uDD16 AI-Powered \u26A1 Fast \u221E Scalable \u25C9 Nodes', after: 'AI-Powered Fast Scalable Nodes' },
     cleanMarkdown:    { before: '## Heading\n**bold text** and *italic* here', after: 'Heading\nbold text and italic here' },

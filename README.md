@@ -25,14 +25,14 @@ Each option can be enabled or disabled in the extension popup. The defaults are 
 
 | Option | Default | What it changes |
 |---|---:|---|
-| Invisible Watermarks | On | Removes zero-width characters, joiners, BOM, soft hyphens, directional marks, and related invisible formatting characters. It also converts non-breaking spaces to regular spaces. |
-| Em Dashes & Double Hyphens | On | Replaces several Unicode dash characters and repeated ASCII hyphens with spaces. It also converts a hyphen used as a clause separator (for example, `word - word`) to a comma and a space. |
+| Invisible Watermarks | On | Removes zero-width formatting characters, BOM, soft hyphens, directional marks, and related invisible characters. Zero-width spaces and word joiners are changed to spaces so adjacent words do not run together. Non-breaking spaces also become regular spaces. |
+| Em Dashes & Double Hyphens | On | Normalizes several Unicode dash characters to a spaced hyphen (` - `) and collapses repeated ASCII hyphens to one hyphen (`--` → `-`). |
 | Smart Quotes | On | Converts supported curly single and double quotation marks to straight quotes. |
 | Emoji & Tech Symbols | On | Removes emoji and a broad range of technical, mathematical, arrow, geometric, and symbol characters. |
 | Markdown Cleanup | **Off** | Removes inline-code backticks, simple bold/italic markers, and Markdown heading prefixes. |
-| Citation Tokens | On | Removes patterns such as `citeturn0search0`, `contentReference[...]`, and supported bracketed citation forms. |
-| Filler Phrases | On | Removes a built-in list of common phrases, including “It is important to note that,” “In conclusion,” “I hope this helps,” and “Certainly!”. |
-| AI Word Replacements | On | Replaces selected words and phrases with simpler alternatives—for example, “utilize” → “use,” “delve into” → “examine,” and “robust” → “strong.” |
+| Citation Tokens | On | Removes `contentReference[...]` tokens and optional metadata blocks, numeric or search citations such as `[1]`, `[2-4]`, or `[cite: 3]`, `` footnotes, and `cite...<number>` search tokens. |
+| Filler Phrases | On | Removes a built-in case-insensitive list of introductory phrases, including “It is important to note that,” “In summary,” “Furthermore,” “Here is,” “Please note that,” “In conclusion,” and “Certainly!”. |
+| AI Word Replacements | On | Replaces selected words with simpler alternatives—for example, “utilize” → “use,” “delve” → “examine,” and “robust” → “strong.” |
 | Unfilled Placeholders | On | Removes supported bracketed prompts such as `[Your Name]`, `[INSERT SOURCE]`, and `[Describe …]`. |
 | Fix Punctuation | On | Repairs selected spacing and punctuation issues, removes some orphan separators, collapses duplicate punctuation and excess spaces, and capitalizes a lowercase letter after sentence-ending punctuation. |
 | Custom Replacements | **Off** | Applies user-defined literal find-and-replace pairs. Rules are applied after the built-in cleaning transformations. |
@@ -94,6 +94,7 @@ The extension uses Manifest V3 and the Chrome Extensions APIs. It has no server 
 | `popup.html` | Popup layout and cleaning/site controls. |
 | `popup.js` | Popup behavior, settings persistence, custom-domain permission handling, and replacement rules. |
 | `styles.css` | Popup styling. |
+| `assets/icon-*.png` | Extension logo in standard browser icon sizes (16, 32, 48, and 128 pixels). |
 
 ## Permissions
 
@@ -110,4 +111,3 @@ The extension uses Manifest V3 and the Chrome Extensions APIs. It has no server 
 - **Only a site's Copy button works:** the site's manual selection/copy flow may not expose the selected text through the standard browser copy event, or it may use a custom clipboard implementation. Try refreshing the site and using Ctrl+C or right-click → Copy again. Behavior can vary by site.
 - **Text changes unexpectedly:** disable the relevant cleaning option in the popup. Each option can be controlled independently.
 - **A removed site still appears to use old behavior in an already-open tab:** refresh that tab after removing the domain.
-
