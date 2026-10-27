@@ -415,6 +415,107 @@ body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
 .btn-add:hover { background: var(--blue-glow); border-color: var(--blue); }
 
+/* ── Allowed sites ── */
+.sites-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 2px 4px 8px;
+  color: var(--text-dim);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.sites-info svg { flex-shrink: 0; color: var(--blue-light); margin-top: 1px; }
+
+.sites-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 130px;
+  overflow-y: auto;
+  padding: 0 2px;
+}
+
+.site-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 28px;
+  padding: 3px 7px;
+  background: var(--card);
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+}
+
+.site-name {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-dim);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.btn-remove-site {
+  flex-shrink: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 10px;
+}
+
+.btn-remove-site:hover { color: var(--danger); }
+
+.sites-add-row {
+  display: flex;
+  gap: 6px;
+  margin: 7px 2px 0;
+}
+
+.site-input {
+  flex: 1;
+  min-width: 0;
+  padding: 7px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  outline: none;
+  background: var(--card);
+  color: var(--text);
+  font-size: 11px;
+}
+
+.site-input:focus { border-color: var(--blue); }
+.site-input::placeholder { color: var(--text-muted); }
+
+.btn-site-add {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 9px;
+  border: 1px solid rgba(59,130,246,0.35);
+  border-radius: 6px;
+  background: var(--blue-dim);
+  color: var(--blue-light);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.btn-site-add:hover { background: var(--blue-glow); }
+.btn-site-add:disabled { cursor: wait; opacity: 0.6; }
+
+.site-message {
+  min-height: 15px;
+  padding: 3px 4px 0;
+  color: var(--green);
+  font-size: 10px;
+}
+
+.site-message.error { color: var(--danger); }
+
 /* ── Footer ── */
 .footer {
   border-top: 1px solid var(--border-soft);

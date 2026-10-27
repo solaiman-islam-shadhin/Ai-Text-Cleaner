@@ -24,6 +24,19 @@
     customReplacements: []
   };
 
+  const DEFAULT_AI_DOMAINS = [
+    'chat.openai.com','chatgpt.com','claude.ai','gemini.google.com',
+    'bard.google.com','copilot.microsoft.com','bing.com','perplexity.ai',
+    'you.com','poe.com','character.ai','deepseek.com','mistral.ai',
+    'huggingface.co','cohere.com','writesonic.com','jasper.ai',
+    'copy.ai','rytr.me','notion.so'
+  ];
+
+  function isAIDomain(allowedDomains) {
+    const host = window.location.hostname.toLowerCase();
+    return allowedDomains.some(d => host === d || host.endsWith('.' + d));
+  }
+
   const RE_INVISIBLE   = /[\u200B\u200C\u200D\uFEFF\u00AD\u200E\u200F\u202A-\u202E\u2060-\u2064\u2066-\u2069\u206A-\u206F]/g;
   const RE_NBSP        = /\u00A0/g;
   const RE_DASHES      = /[\u2012\u2013\u2014\u2015\u2212\uFE58\u2E3A\u2E3B]/g;
@@ -289,9 +302,14 @@
   const BRIDGE_REQUEST_EVENT = 'ai-text-cleaner:settings-request';
 
   let currentSettings = Object.assign({}, DEFAULT_SETTINGS);
+  let domainAllowed   = false;
 
   document.addEventListener(BRIDGE_EVENT, (event) => {
-    if (event && event.detail) currentSettings = Object.assign({}, DEFAULT_SETTINGS, event.detail);
+    if (event && event.detail) {
+      currentSettings = Object.assign({}, DEFAULT_SETTINGS, event.detail.settings || event.detail);
+      const domains   = event.detail.aiDomains || DEFAULT_AI_DOMAINS;
+      domainAllowed   = isAIDomain(domains);
+    }
   });
 
   document.dispatchEvent(new CustomEvent(BRIDGE_REQUEST_EVENT));
@@ -303,6 +321,7 @@
   if (typeof navigator.clipboard.writeText === 'function') {
     const _writeText = navigator.clipboard.writeText.bind(navigator.clipboard);
     navigator.clipboard.writeText = function (text) {
+      if (!domainAllowed || !currentSettings.masterEnabled) return _writeText(text);
       try { return _writeText(cleanText(text, currentSettings)); }
       catch (e) { return _writeText(text); }
     };
@@ -311,6 +330,7 @@
   if (typeof navigator.clipboard.write === 'function' && typeof ClipboardItem !== 'undefined') {
     const _write = navigator.clipboard.write.bind(navigator.clipboard);
     navigator.clipboard.write = async function (items) {
+      if (!domainAllowed || !currentSettings.masterEnabled) return _write(items);
       try {
         const cleaned = await Promise.all(items.map(async (item) => {
           const newData = {};

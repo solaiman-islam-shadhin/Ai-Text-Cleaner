@@ -27,6 +27,36 @@
     customReplacements: []
   };
 
+  // Default AI platform domains — user can add/remove via popup
+  const DEFAULT_AI_DOMAINS = [
+    'chat.openai.com',
+    'chatgpt.com',
+    'claude.ai',
+    'gemini.google.com',
+    'bard.google.com',
+    'copilot.microsoft.com',
+    'bing.com',
+    'perplexity.ai',
+    'you.com',
+    'poe.com',
+    'character.ai',
+    'deepseek.com',
+    'mistral.ai',
+    'huggingface.co',
+    'cohere.com',
+    'writesonic.com',
+    'jasper.ai',
+    'copy.ai',
+    'rytr.me',
+    'notion.so'
+  ];
+
+  // Check if current hostname matches any allowed domain
+  function isAIDomain(allowedDomains) {
+    const host = window.location.hostname.toLowerCase();
+    return allowedDomains.some(d => host === d || host.endsWith('.' + d));
+  }
+
   const RE_INVISIBLE   = /[\u200B\u200C\u200D\uFEFF\u00AD\u200E\u200F\u202A-\u202E\u2060-\u2064\u2066-\u2069\u206A-\u206F]/g;
   const RE_NBSP        = /\u00A0/g;
   const RE_DASHES      = /[\u2012\u2013\u2014\u2015\u2212\uFE58\u2E3A\u2E3B]/g;
@@ -304,17 +334,26 @@
   const BRIDGE_REQUEST_EVENT = 'ai-text-cleaner:settings-request';
 
   let currentSettings = Object.assign({}, DEFAULT_SETTINGS);
+  let currentAIDomains = DEFAULT_AI_DOMAINS.slice();
+  let domainAllowed    = false; // set after first load
 
   function broadcastSettings() {
-    document.dispatchEvent(new CustomEvent(BRIDGE_EVENT, { detail: currentSettings }));
+    document.dispatchEvent(new CustomEvent(BRIDGE_EVENT, {
+      detail: { settings: currentSettings, aiDomains: currentAIDomains }
+    }));
   }
 
   function loadSettings() {
-    chrome.storage.sync.get(DEFAULT_SETTINGS, (stored) => {
-      if (chrome.runtime.lastError) return;
-      currentSettings = Object.assign({}, DEFAULT_SETTINGS, stored);
-      broadcastSettings();
-    });
+    chrome.storage.sync.get(
+      Object.assign({ aiDomains: DEFAULT_AI_DOMAINS }, DEFAULT_SETTINGS),
+      (stored) => {
+        if (chrome.runtime.lastError) return;
+        currentSettings  = Object.assign({}, DEFAULT_SETTINGS, stored);
+        currentAIDomains = Array.isArray(stored.aiDomains) ? stored.aiDomains : DEFAULT_AI_DOMAINS.slice();
+        domainAllowed    = isAIDomain(currentAIDomains);
+        broadcastSettings();
+      }
+    );
   }
 
   loadSettings();
@@ -388,8 +427,9 @@
 
   // ─── Copy event interception ──────────────────────────────────────────────────
 
-  document.addEventListener('copy', (event) => {
+  window.addEventListener('copy', (event) => {
     if (!currentSettings.masterEnabled) return;
+    if (!domainAllowed) return;
 
     const selectedText = getSelectionText();
 
@@ -398,6 +438,7 @@
       event.clipboardData.setData('text/plain', cleanText(selectedText, currentSettings));
       event.clipboardData.setData('text/html', selectedHTML ? cleanHTML(selectedHTML, currentSettings) : cleanText(selectedText, currentSettings));
       event.preventDefault();
+      event.stopImmediatePropagation();
       return;
     }
 
@@ -408,8 +449,9 @@
   // ─── Keydown interception for Ctrl+C / Cmd+C ─────────────────────────────────
   // Some sites suppress the copy event; we catch keydown as a secondary trigger.
 
-  document.addEventListener('keydown', (event) => {
+  window.addEventListener('keydown', (event) => {
     if (!currentSettings.masterEnabled) return;
+    if (!domainAllowed) return;
     const isCtrlC = (event.ctrlKey || event.metaKey) && event.key === 'c';
     if (!isCtrlC) return;
 
