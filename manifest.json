@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "AI Text Cleaner",
+  "version": "3.0.0",
+  "description": "Removes AI writing patterns, symbols, filler phrases, and watermarks from copied text to make it sound natural.",
+  "permissions": ["storage", "clipboardWrite", "clipboardRead", "activeTab", "scripting"],
+  "host_permissions": ["<all_urls>"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "AI Text Cleaner"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_start",
+      "all_frames": true
+    },
+    {
+      "matches": ["<all_urls>"],
+      "js": ["clipboard-interceptor.js"],
+      "run_at": "document_start",
+      "all_frames": true,
+      "world": "MAIN"
+    }
+  ]
+}

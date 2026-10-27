@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>AI Text Cleaner</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ── HEADER ── -->
+  <header class="header">
+    <div class="header-brand">
+      <div class="brand-logo">
+        <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="4" y="14" width="20" height="10" rx="2.5" fill="url(#grad1)"/>
+          <rect x="4" y="14" width="7" height="10" rx="2.5" fill="#f87171"/>
+          <path d="M25 4 L26.2 7.8 L30 9 L26.2 10.2 L25 14 L23.8 10.2 L20 9 L23.8 7.8 Z" fill="#f59e0b"/>
+          <path d="M27 17 L27.7 19.3 L30 20 L27.7 20.7 L27 23 L26.3 20.7 L24 20 L26.3 19.3 Z" fill="#60a5fa" opacity="0.9"/>
+          <line x1="11" y1="14" x2="11" y2="24" stroke="white" stroke-width="1" opacity="0.3"/>
+          <defs>
+            <linearGradient id="grad1" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#f59e0b"/>
+              <stop offset="100%" stop-color="#3b82f6"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">AI Text Cleaner</span>
+        <span class="brand-tagline">Humanize your copy</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <label class="master-toggle" title="Enable / Disable">
+        <input type="checkbox" id="masterEnabled" />
+        <span class="master-track">
+          <span class="master-thumb"></span>
+        </span>
+      </label>
+    </div>
+  </header>
+
+  <!-- ── STATUS BAR ── -->
+  <div class="status-bar" id="statusBar">
+    <span class="status-dot" id="statusDot"></span>
+    <span id="statusText">Active — all copies are cleaned</span>
+  </div>
+
+  <!-- ── MAIN OPTIONS ── -->
+  <main class="options" id="options">
+
+    <!-- Section: Symbols & Formatting -->
+    <div class="section-header">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+      Symbols &amp; Formatting
+    </div>
+
+    <div class="option-card" data-option="removeWatermarks">
+      <div class="option-icon ic-blue">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 14l-3-3 1.41-1.41L11 12.17l4.59-4.58L17 9l-6 6z"/></svg>
+      </div>
+      <div class="option-body">
+        <span class="option-title">Invisible Watermarks</span>
+        <span class="option-desc">Zero-width spaces, ZWNJ/ZWJ, BOM, soft hyphens &amp; bidi marks</span>
+      </div>
+      <button class="btn-preview" title="Preview">&#128065;</button>
+      <label class="toggle"><input type="checkbox" id="removeWatermarks"/><span class="track"><span class="thumb"></span></span></label>
+      <div class="preview-panel">
+        <div class="preview-row"><span class="preview-label">Before</span><span class="preview-text preview-before">Hello&#x200B; World&#xFEFF; text</span></div>
+        <div class="preview-row"><span class="preview-label">After</span><span class="preview-text preview-after">Hello World text</span></div>
+      </div>
+    </div>
+
+    <div class="option-card" data-option="fixDashes">
+      <div class="option-icon ic-amber">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13H5v-2h14v2z"/></svg>
+      </div>
+      <div class="option-body">
+        <span class="option-title">Em Dashes &amp; Double Hyphens</span>
+        <span class="option-desc">Replace &mdash; &ndash; and -- with a space</span>
+      </div>
+      <button class="btn-preview" title="Preview">&#128065;</button>
+      <label class="toggle"><input type="checkbox" id="fixDashes"/><span class="track"><span class="thumb"></span></span></label>
+      <div class="preview-panel">
+        <div class="preview-row"><span class="preview-label">Before</span><span class="preview-text preview-before">AI tools&mdash;once niche&mdash;are mainstream</span></div>
+        <div class="preview-row"><span class="preview-label">After</span><span class="preview-text preview-after">AI tools once niche are mainstream</span></div>
+      </div>
+    </div>
+
+    <div class="option-card" data-option="fixQuotes">
+      <div class="option-icon ic-purple">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/></svg>
+      </div>
+      <div class="option-body">
+        <span class="option-title">Smart Quotes</span>
+        <span class="option-desc">Convert curly &ldquo; &rdquo; &lsquo; &rsquo; to straight " '</span>
+      </div>
+      <button class="btn-preview" title="Preview">&#128065;</button>
+      <label class="toggle"><input type="checkbox" id="fixQuotes"/><span class="track"><span class="thumb"></span></span></label>
+      <div class="preview-panel">
+        <div class="preview-row"><span class="preview-label">Before</span><span class="preview-text preview-before">&ldquo;Hello&rdquo; she said, &lsquo;great&rsquo;</span></div>
+        <div class="preview-row"><span class="preview-label">After</span><span class="preview-text preview-after">"Hello" she said, 'great'</span></div>
+      </div>
+    </div>
+
+    <div class="option-card" data-option="removeEmojis">
+      <div class="option-icon ic-orange">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
+      </div>
+      <div class="option-body">
+        <span class="option-title">Emoji &amp; Tech Symbols</span>
+        <span class="option-desc">Strip emojis, &#x232C; &#x269B; &#x221E; &#x2297; &#x25C9; &#x27F3; and math symbols</span>
+      </div>
+      <button class="btn-preview" title="Preview">&#128065;</button>
+      <label class="toggle"><input type="checkbox" id="removeEmojis"/><span class="track"><span class="thumb"></span></span></label>
+      <div class="preview-panel">
+        <div class="preview-row"><span class="preview-label">Before</span><span class="preview-text preview-before">&#x1F916; AI-Powered &#x26A1; Fast &#x221E; Scalable</span></div>
+        <div class="preview-row"><span class="preview-label">After</span><span class="preview-text preview-after">AI-Powered Fast Scalable</span></div>
+      </div>
+    </div>
+
+    <div class="option-card" data-option="cleanMarkdown">
+      <div class="option-icon ic-sky">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20 5H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-9 3h2v2h-2V8zm0 3h2v5h-2v-5zM8 8h2v8H8V8zm8 8h-2v-4h2v4zm0-5h-2v-2h2v2z"/></svg>
+      </div>
+      <div class="option-body">
+        <span class="option-title">Markdown Cleanup</span>
+        <span class="option-desc">Unwrap **bold** / *italic* and strip # heading hashes</span>
+      </div>
+      <button class="btn-preview" title="Preview">&#128065;</button>
+      <label class="toggle"><input type="checkbox" id="cleanMarkdown"/><span class="track"><span class="thumb"></span></span></label>
+      <div class="preview-panel">
+        <div class="preview-row"><span class="preview-label">Before</span><span class="preview-text preview-before">## Heading
+**bold** and *italic* text</span></div>
+        <div class="preview-row"><span class="preview-label">After</span><span class="preview-text preview-after">Heading
+bold and italic text</span></div>
+      </div>
+    </div>
+
+    <div class="option-card" data-option="removeCitations">
+      <div class="option-icon ic-red">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg>
+      </div>
+      <div class="option-body">
+        <span class="option-title">Citation Tokens</span>
+        <span class="option-desc">Delete citeturn0search0, contentReference[&hellip;], 【&hellip;】 tokens</span>
+      </div>
+      <button class="btn-preview" title="Preview">&#128065;</button>
+      <label class="toggle"><input type="checkbox" id="removeCitations"/><span class="track"><span class="thumb"></span></span></label>
+      <div class="preview-panel">
+        <div class="preview-row"><span class="preview-label">Before</span><span class="preview-text preview-before">The model citeturn0search0 is fast contentReference[0]</span></div>
+        <div class="preview-row"><span class="preview-label">After</span><span class="preview-text preview-after">The model  is fast </span></div>
+      </div>
+    </div>
+
+    <!-- Section: AI Writing Patterns -->
+    <div class="section-header">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+      AI Writing Patterns
+    </div>
+
+    <div class="option-card" data-option="removeFillerPhrases">
+      <div class="option-icon ic-teal">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+      </div>
+      <div class="option-body">
+        <span class="option-title">Filler Phrases</span>
+        <span class="option-desc">Remove "It is important to note", "In conclusion", "Certainly!", "Overall", etc.</span>
+      </div>
+      <button class="btn-preview" title="Preview">&#128065;</button>
+      <label class="toggle"><input type="checkbox" id="removeFillerPhrases"/><span class="track"><span class="thumb"></span></span></label>
+      <div class="preview-panel">
+        <div class="preview-row"><span class="preview-label" style="color:#f87171">Before</span><span class="preview-text">It is important to note that the model works. In conclusion, it is fast.</span></div>
+        <div class="preview-row"><span class="preview-label" style="color:#4ade80">After</span><span class="preview-text">The model works. It is fast.</span></div>
+      </div>
+    </div>
+
+    <div class="option-card" data-option="replaceAIWords">
+      <div class="option-icon ic-lime">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg>
+      </div>
+      <div class="option-body">
+        <span class="option-title">AI Word Replacements</span>
+        <span class="option-desc">utilize→use, leverage→use, delve→examine, seamless→smooth, robust→strong…</span>
+      </div>
+      <button class="btn-preview" title="Preview">&#128065;</button>
+      <label class="toggle"><input type="checkbox" id="replaceAIWords"/><span class="track"><span class="thumb"></span></span></label>
+      <div class="preview-panel">
+        <div class="preview-row"><span class="preview-label" style="color:#f87171">Before</span><span class="preview-text">We utilize robust solutions to leverage seamless workflows.</span></div>
+        <div class="preview-row"><span class="preview-label" style="color:#4ade80">After</span><span class="preview-text">We use strong solutions to use smooth workflows.</span></div>
+      </div>
+    </div>
+
+    <div class="option-card" data-option="removePlaceholders">
+      <div class="option-icon ic-yellow">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+      </div>
+      <div class="option-body">
+        <span class="option-title">Unfilled Placeholders</span>
+        <span class="option-desc">Strip [Your Name], [INSERT SOURCE], [Describe…] tokens</span>
+      </div>
+      <button class="btn-preview" title="Preview">&#128065;</button>
+      <label class="toggle"><input type="checkbox" id="removePlaceholders"/><span class="track"><span class="thumb"></span></span></label>
+      <div class="preview-panel">
+        <div class="preview-row"><span class="preview-label" style="color:#f87171">Before</span><span class="preview-text">Contact [Your Name] at [INSERT SOURCE] for details.</span></div>
+        <div class="preview-row"><span class="preview-label" style="color:#4ade80">After</span><span class="preview-text">Contact  at  for details.</span></div>
+      </div>
+    </div>
+
+    <div class="option-card" data-option="fixPunctuation">
+      <div class="option-icon ic-sky">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12.45 16h-2l-.31 2H8.5l2-12h3l2 12h-1.64l-.41-2zm-.26-2l-.69-4.52L10.81 14h1.38zM4 4h16v2H4zm0 14h7v2H4zm9 0h7v2h-7z"/></svg>
+      </div>
+      <div class="option-body">
+        <span class="option-title">Fix Punctuation</span>
+        <span class="option-desc">Clean up stray commas, double periods &amp; spaces left after removals</span>
+      </div>
+      <button class="btn-preview" title="Preview">&#128065;</button>
+      <label class="toggle"><input type="checkbox" id="fixPunctuation"/><span class="track"><span class="thumb"></span></span></label>
+      <div class="preview-panel">
+        <div class="preview-row"><span class="preview-label" style="color:#f87171">Before</span><span class="preview-text">Hello ,world.. the answer is( yes ).</span></div>
+        <div class="preview-row"><span class="preview-label" style="color:#4ade80">After</span><span class="preview-text">Hello, world. The answer is(yes).</span></div>
+      </div>
+    </div>
+
+    <!-- Section: Custom Rules -->
+    <div class="section-header">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+      Custom Rules
+    </div>
+
+    <div class="option-card" data-option="customReplacementsEnabled">
+      <div class="option-icon ic-indigo">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+      </div>
+      <div class="option-body">
+        <span class="option-title">Custom Replacements</span>
+        <span class="option-desc">Your own find → replace pairs applied on every copy</span>
+      </div>
+      <label class="toggle"><input type="checkbox" id="customReplacementsEnabled"/><span class="track"><span class="thumb"></span></span></label>
+    </div>
+
+    <div class="custom-replacements" id="customReplacements">
+      <div class="replacements-list" id="replacementsList"></div>
+      <button type="button" class="btn-add" id="addReplacementBtn">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        Add rule
+      </button>
+    </div>
+
+  </main>
+
+  <!-- ── FOOTER ── -->
+  <footer class="footer">
+    <div class="footer-top">
+      <span class="footer-badge">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+        v3.0
+      </span>
+      <span class="footer-hint">Ctrl+C, right-click &amp; AI copy buttons</span>
+    </div>
+    <div class="footer-dev">
+      <span class="footer-dev-text">by <span>Md Solaiman Islam Shadhin</span></span>
+      <a class="footer-github" href="https://github.com/solaiman-islam-shadhin" target="_blank" title="GitHub">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </footer>
+
+  <script src="popup.js"></script>
+</body>
+</html>
